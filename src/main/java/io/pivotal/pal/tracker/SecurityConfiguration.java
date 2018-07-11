@@ -27,12 +27,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (envHttpsDisabled) {
             http.authorizeRequests().antMatchers("/**").hasRole("USER")
-                    .and().formLogin()
                     .and().httpBasic()
                     .and().csrf().disable();
         } else {
             http.authorizeRequests().antMatchers("/**").hasRole("USER")
-                    .and().formLogin()
                     .and().httpBasic()
                     .and().requiresChannel().anyRequest().requiresSecure()
                     .and().csrf().disable();
