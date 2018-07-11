@@ -16,7 +16,7 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.1")
     compile("org.springframework.boot:spring-boot-starter-jdbc")
     compile("mysql:mysql-connector-java:6.0.6")
-
+    compile("org.springframework.boot:spring-boot-starter-actuator")
 
 }
 
@@ -31,7 +31,7 @@ bootRun.environment([
         "CF_INSTANCE_INDEX":"123",
         "CF_INSTANCE_ADDR":"MyAddress",
         "SPRING_DATASOURCE_URL": developmentDbUrl,
-
+        "MANAGEMENT_SECURITY_ENABLED": false,
 
 ])
 
@@ -42,6 +42,7 @@ test.environment([
         "CF_INSTANCE_INDEX":"4123",
         "CF_INSTANCE_ADDR":"MyAddresstest",
         "SPRING_DATASOURCE_URL": testDbUrl,
+        "MANAGEMENT_SECURITY_ENABLED": false,
 ])
 
 
@@ -56,4 +57,8 @@ flyway {
 
 task testMigrate(type: FlywayMigrateTask) {
     url = testDbUrl
+}
+
+springBoot {
+    buildInfo()
 }
