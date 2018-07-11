@@ -25,15 +25,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (envHttpsDisabled) {
-            http.authorizeRequests().antMatchers("/**").hasRole("USER")
-                    .and().httpBasic()
-                    .and().csrf().disable();
-        } else {
-            http.authorizeRequests().antMatchers("/**").hasRole("USER")
-                    .and().httpBasic()
-                    .and().requiresChannel().anyRequest().requiresSecure()
-                    .and().csrf().disable();
+        if (!envHttpsDisabled) {
+            http.requiresChannel().anyRequest().requiresSecure();
         }
+
+        http
+                .authorizeRequests().antMatchers("/**").hasRole("USER")
+                .and()
+                .httpBasic()
+                .and()
+                .csrf().disable();
     }
 }
