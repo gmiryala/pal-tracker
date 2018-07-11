@@ -12,7 +12,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private boolean envHttpsDisabled = false;
 
-    public SecurityConfiguration (@Value("${HTTPS_DISABLED}") Boolean envHttpsDisabled) {
+    public SecurityConfiguration (@Value("${HTTPS_DISABLED:false}") Boolean envHttpsDisabled) {
         this.envHttpsDisabled = envHttpsDisabled;
     }
 
@@ -25,15 +25,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (!envHttpsDisabled) {
-            http.requiresChannel().anyRequest().requiresSecure();
+        if (envHttpsDisabled) {
+            http.authorizeRequests().antMatchers("/**").hasRole("USER")
+                    .and().formLogin()
+                    .and().httpBasic()
+                    .and().csrf().disable();
+        } else {
+            http.authorizeRequests().antMatchers("/**").hasRole("USER")
+                    .and().formLogin()
+                    .and().httpBasic()
+                    .and().requiresChannel().anyRequest().requiresSecure()
+                    .and().csrf().disable();
         }
-
-        http
-                .authorizeRequests().antMatchers("/**").hasRole("USER")
-                .and()
-                .httpBasic()
-                .and()
-                .csrf().disable();
     }
 }
